@@ -1,56 +1,143 @@
+/* Header.css */
+
 .header {
-  background-color: var(--button-bg);
-  color: var(--button-color);
-  padding: 15px 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #ffffff; /* білий фон */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333333; /* темний текст */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-logo {
-  font-weight: bold;
-  font-size: 1.4rem;
+  font-weight: 700;
+  font-size: 1.5rem;
   cursor: pointer;
   user-select: none;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-logo span {
+  font-weight: 700;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 1rem;
 }
 
 .header-nav button {
-  background: none;
+  background: transparent;
   border: none;
-  color: var(--button-color);
-  margin-left: 15px;
-  font-size: 1rem;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #000000;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.header-nav button:hover,
+.header-nav button:hover {
+  background-color: #e1e9ff;
+  color: #000000;
+}
+
 .header-nav button.active {
-  background-color: var(--button-color);
-  color: var(--button-bg);
+  background-color: #000000;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .profile-info {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
+  gap: 12px;
+  font-weight: 600;
+  color: #555555;
+}
+
+.logout-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
 }
 
 .theme-toggle-btn {
-  margin-left: 20px;
-  padding: 6px 12px;
-  border-radius: 4px;
+  background-color: #4e8dff;
+  color: white;
   border: none;
-  background-color: var(--button-color);
-  color: var(--button-bg);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .theme-toggle-btn:hover {
-  background-color: var(--button-bg);
-  color: var(--button-color);
-  cursor: pointer;
+  background-color: #1a4fff;
+}
+
+/* Темна тема */
+body.dark-theme {
+  background-color: #121212;
+  color: #eee;
+}
+
+body.dark-theme .header {
+  background-color: #1f1f1f;
+  color: #eee;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .header-nav button {
+  color: #eee;
+}
+
+body.dark-theme .header-nav button:hover {
+  background-color: #333;
+  color: #7faaff;
+}
+
+body.dark-theme .header-nav button.active {
+  background-color: #4e8dff;
+  color: white;
+}
+
+body.dark-theme .profile-info {
+  color: #bbb;
+}
+
+body.dark-theme .logout-btn {
+  background-color: #e53935;
+}
+
+body.dark-theme .logout-btn:hover {
+  background-color: #b71c1c;
+}
+
+body.dark-theme .theme-toggle-btn {
+  background-color: #6c8cff;
+}
+
+body.dark-theme .theme-toggle-btn:hover {
+  background-color: #3a62cc;
 }

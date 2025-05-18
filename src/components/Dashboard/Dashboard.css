@@ -1,47 +1,57 @@
-.dashboard-container {
-  padding: 25px;
-  max-width: 900px;
-  margin: 0 auto;
-  color: var(--text-color);
+/* Dashboard.css */
+
+.container {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff; /* Білий фон */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333333; /* Темно-сірий текст */
 }
 
-.dashboard-header {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-weight: 500;
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a; /* Темний колір заголовка */
 }
 
-.user-info button {
-  cursor: pointer;
-  background-color: var(--button-bg);
-  color: var(--button-color);
+header .user-info {
+  font-size: 1rem;
+  color: #555555; /* Трохи світліший для email */
+}
+
+header .user-info button {
+  margin-left: 10px;
+  background-color: #f44336;
   border: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.user-info button:hover {
-  background-color: var(--button-hover-bg);
+header .user-info button:hover {
+  background-color: #d32f2f;
 }
 
-.theme-toggle {
-  font-size: 0.9rem;
-}
-
-.stats-section h2 {
+h2, h3 {
+  color: #1a1a1a;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
-.stats-list {
+ul {
   list-style: none;
   padding: 0;
   display: flex;
@@ -52,43 +62,39 @@
 .stat-card {
   flex: 1 1 200px;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
+  color: #fff; /* Текст білий всередині кольорових карток */
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.1rem;
-  box-shadow: 0 2px 7px rgba(0,0,0,0.1);
-  background-color: var(--card-bg);
-  color: var(--text-color);
 }
 
-.stat-card.blue {
-  background-color: #4e8dff;
-  color: #fff;
-}
-
-.stat-card.dark-blue {
+/* Кольорові картки з білим текстом */
+.stat-card:nth-child(1) {
   background-color: #264653;
-  color: #fff;
 }
 
-.stat-card.green {
-  background-color: #38b000;
-  color: #fff;
-}
-
-.stat-card.dark-green {
+.stat-card:nth-child(2) {
   background-color: #2a9d8f;
-  color: #fff;
 }
 
-.stat-card.orange {
-  background-color: #f4a261;
-  color: #000;
-}
-
-.stat-card.dark-yellow {
+.stat-card:nth-child(3) {
   background-color: #e9c46a;
-  color: #000;
+  color: #000; /* чорний текст на жовтому */
 }
 
-.chart-section {
+.stat-card:nth-child(4) {
+  background-color: transparent;
+  color: #333; /* темний текст */
+}
+
+/* Графік */
+.recharts-wrapper {
   margin-top: 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }

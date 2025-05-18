@@ -3,6 +3,7 @@ import { db, collection, addDoc, getDocs, query, where, orderBy, Timestamp } fro
 import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
+import './TimeTracker.css';
 
 const TimeTracker = () => {
   const [timeEntries, setTimeEntries] = useState([]);
@@ -15,13 +16,11 @@ const TimeTracker = () => {
 
   const navigate = useNavigate();
 
-  // Завантажуємо тему з localStorage при ініціалізації
   useEffect(() => {
     const storedTheme = localStorage.getItem('darkTheme');
     setDarkTheme(storedTheme === 'true');
   }, []);
 
-  // Зберігаємо тему в localStorage та оновлюємо клас body
   useEffect(() => {
     localStorage.setItem('darkTheme', darkTheme);
     if (darkTheme) {
@@ -151,7 +150,7 @@ const TimeTracker = () => {
 
   return (
     <Layout>
-      <div className={`container ${darkTheme ? 'dark' : 'light'}`} style={{ padding: '20px' }}>
+      <div className={`container ${darkTheme ? 'dark' : 'light'}`}>
         <h2>Тайм-трекер</h2>
 
         <input
@@ -159,35 +158,29 @@ const TimeTracker = () => {
           placeholder="Назва запису"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{
-            padding: '8px',
-            marginBottom: '10px',
-            width: '300px',
-            color: darkTheme ? '#e0e0e0' : '#000',
-            backgroundColor: darkTheme ? '#333' : '#fff',
-            border: '1px solid',
-            borderColor: darkTheme ? '#555' : '#ccc',
-          }}
+          className="title-input"
         />
         <br />
 
-        {!isRunning && !isPaused && <button onClick={handleStart}>Start</button>}
-        {isRunning && <button onClick={handlePause}>Pause</button>}
-        {!isRunning && isPaused && <button onClick={handleStart}>Resume</button>}
-        {(isRunning || isPaused) && (
-          <button onClick={handleStopAndSave} style={{ marginLeft: '10px' }}>
-            Stop & Save
-          </button>
-        )}
+        <div className="buttons-row">
+          {!isRunning && !isPaused && <button onClick={handleStart}>Start</button>}
+          {isRunning && <button onClick={handlePause}>Pause</button>}
+          {!isRunning && isPaused && <button onClick={handleStart}>Resume</button>}
+          {(isRunning || isPaused) && (
+            <button onClick={handleStopAndSave} className="stop-save-btn">
+              Stop & Save
+            </button>
+          )}
+        </div>
 
         {(isRunning || isPaused) && (
-          <p style={{ fontSize: '18px', marginTop: '10px', color: darkTheme ? '#e0e0e0' : '#000' }}>
+          <p className="timer-display">
             Час з початку: <strong>{formatElapsedTime(elapsedTime)}</strong>
           </p>
         )}
 
-        <h3 style={{ color: darkTheme ? '#e0e0e0' : '#000' }}>Історія</h3>
-        <ul style={{ color: darkTheme ? '#e0e0e0' : '#000' }}>
+        <h3>Історія</h3>
+        <ul className="time-entries-list">
           {timeEntries.map((entry, index) => (
             <li key={index}>
               <strong>{entry.title || 'Без назви'}:</strong> {formatTime(entry.start_time)} —{' '}
