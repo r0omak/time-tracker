@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, addDoc, getDocs, query, where, orderBy, Timestamp } from '../firebase';
-import { auth } from '../firebase';
+import { db, collection, addDoc, getDocs, query, where, orderBy, Timestamp } from '../../firebase';
+import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import Layout from './Layout';
+import Layout from '../Layout/Layout';
 
 const TimeTracker = () => {
   const [timeEntries, setTimeEntries] = useState([]);

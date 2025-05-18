@@ -14,11 +14,9 @@ const Login = () => {
     e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      Cookies.set('userToken', user.accessToken, { expires: 7 });
+      Cookies.set('userToken', userCredential.user.accessToken, { expires: 7 });
       navigate('/dashboard');
     } catch (error) {
-      console.error(error.message);
       alert('Login failed: ' + error.message);
     }
   };

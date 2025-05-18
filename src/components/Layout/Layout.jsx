@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from './Header';
-import './Layout.css'; // можна для обгортки
+import Header from '../Header/Header';
+import './Layout.css';
 
 const Layout = ({ children }) => {
   return (

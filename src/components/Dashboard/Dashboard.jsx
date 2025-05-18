@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
-import { auth, db } from '../firebase';
+import { auth, db } from '../../firebase';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
-import Layout from './Layout';
+import Layout from '../Layout/Layout';
 import {
   LineChart,
   Line,
@@ -13,6 +13,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
+import './Dashboard.css';
+
 const Dashboard = () => {
   const [stats, setStats] = useState({
     count: 0,
@@ -22,7 +24,7 @@ const Dashboard = () => {
   const [chartData, setChartData] = useState([]);
   const [darkTheme, setDarkTheme] = useState(false);
 
-  // Завантаження даних
+  // Завантаження даних з Firestore
   const fetchStats = async () => {
     const user = auth.currentUser;
     if (!user) return;
@@ -31,7 +33,6 @@ const Dashboard = () => {
     const snapshot = await getDocs(q);
     const entries = snapshot.docs.map((doc) => doc.data());
 
-    const count = entries.length;
     let totalMinutes = 0;
     let lastDate = null;
     const dataForChart = [];
@@ -44,17 +45,14 @@ const Dashboard = () => {
       const end =
         entry.end_time instanceof Timestamp ? entry.end_time.toDate() : new Date(entry.end_time);
 
-      const duration = (end - start) / 1000 / 60;
+      const duration = (end - start) / 1000 / 60; // хвилини
       totalMinutes += duration;
 
       if (!lastDate || end > lastDate) {
         lastDate = end;
       }
 
-      const dateLabel = start.toLocaleDateString('uk-UA', {
-        day: '2-digit',
-        month: '2-digit',
-      });
+      const dateLabel = start.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
 
       dataForChart.push({
         date: dateLabel,
@@ -62,75 +60,64 @@ const Dashboard = () => {
       });
     });
 
-    setChartData(dataForChart);
-
     setStats({
-      count,
+      count: entries.length,
       totalMinutes: Math.round(totalMinutes),
       lastEntryDate: lastDate ? lastDate.toLocaleString('uk-UA') : '—',
     });
+    setChartData(dataForChart);
   };
 
-  // Підрахунок середньої сесії
+  // Обчислення середньої тривалості сесії
   const avgMinutes = stats.count ? Math.round(stats.totalMinutes / stats.count) : 0;
 
-  // Перемикання теми
-  const toggleTheme = () => {
-    setDarkTheme((prev) => !prev);
-  };
+  // Тогл теми
+  const toggleTheme = () => setDarkTheme((prev) => !prev);
 
-  // Додаємо/видаляємо клас body.dark
+  // Додаємо/видаляємо клас для теми в body
   useEffect(() => {
-    if (darkTheme) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
+    document.body.classList.toggle('dark', darkTheme);
   }, [darkTheme]);
 
+  // Завантаження статистики при завантаженні
   useEffect(() => {
     fetchStats();
   }, []);
 
   return (
     <Layout>
-      <div className="container">
-        <header>
+      <div className="dashboard-container">
+        <header className="dashboard-header">
           <h1>Welcome to Dashboard</h1>
-          <div style={{ textAlign: 'right', marginBottom: '10px' }}>
+          <div className="user-info">
             👤 {auth.currentUser?.email} <button onClick={() => signOut(auth)}>Вийти</button>
+            <button className="theme-toggle" onClick={toggleTheme}>
+              {darkTheme ? 'Світла тема' : 'Темна тема'}
+            </button>
           </div>
         </header>
 
-        <h2>Статистика</h2>
-        <ul>
-          <li
-            className="stat-card"
-            style={{ backgroundColor: darkTheme ? '#264653' : '#4e8dff', color: '#fff' }}
-          >
-            📌 Записів часу: <strong>{stats.count}</strong>
-          </li>
-          <li
-            className="stat-card"
-            style={{ backgroundColor: darkTheme ? '#2a9d8f' : '#38b000', color: '#fff' }}
-          >
-            <span title="Сумарна кількість хвилин за всі записи">⏳ Загальна тривалість:</span>{' '}
-            <strong>{stats.totalMinutes}</strong> хв
-          </li>
-          <li
-            className="stat-card"
-            style={{ backgroundColor: darkTheme ? '#e9c46a' : '#f4a261', color: '#000' }}
-          >
-            🗓 Останній запис: <strong>{stats.lastEntryDate}</strong>
-          </li>
-          <li>
-            ⚖️ Середня сесія: <strong>{avgMinutes} хв</strong>
-          </li>
-        </ul>
+        <section className="stats-section">
+          <h2>Статистика</h2>
+          <ul className="stats-list">
+            <li className={`stat-card ${darkTheme ? 'dark-blue' : 'blue'}`}>
+              📌 Записів часу: <strong>{stats.count}</strong>
+            </li>
+            <li className={`stat-card ${darkTheme ? 'dark-green' : 'green'}`}>
+              ⏳ Загальна тривалість: <strong>{stats.totalMinutes}</strong> хв
+            </li>
+            <li className={`stat-card ${darkTheme ? 'dark-yellow' : 'orange'}`}>
+              🗓 Останній запис: <strong>{stats.lastEntryDate}</strong>
+            </li>
+            <li className="stat-card">
+              ⚖️ Середня сесія: <strong>{avgMinutes} хв</strong>
+            </li>
+          </ul>
+        </section>
 
         {chartData.length > 0 && (
-          <>
-            <h3 style={{ marginTop: '30px' }}>📈 Графік робочих сесій</h3>
+          <section className="chart-section">
+            <h3>📈 Графік робочих сесій</h3>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -140,7 +127,7 @@ const Dashboard = () => {
                 <Line type="monotone" dataKey="duration" stroke="#4e8dff" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
-          </>
+          </section>
         )}
       </div>
     </Layout>

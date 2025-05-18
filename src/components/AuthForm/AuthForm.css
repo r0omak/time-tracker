@@ -1,0 +1,58 @@
+.auth-form-container {
+  max-width: 400px;
+  margin: 40px auto;
+  background-color: var(--input-bg);
+  padding: 30px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  color: var(--text-color);
+}
+
+.auth-form-container h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-form-container input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.auth-form-container input:focus {
+  outline: none;
+  border-color: var(--button-bg);
+}
+
+.auth-form-container button {
+  width: 100%;
+  background-color: var(--button-bg);
+  border: none;
+  padding: 12px;
+  color: var(--button-color);
+  font-weight: 700;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.auth-form-container button:hover {
+  background-color: var(--button-color);
+  color: var(--button-bg);
+  cursor: pointer;
+}
+
+.auth-form-container p {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.auth-form-container a {
+  color: var(--link-color);
+  font-weight: 600;
+}

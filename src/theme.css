@@ -1,0 +1,21 @@
+/* theme.css */
+
+:root {
+  --bg-color: #f9f9f9;
+  --text-color: #333;
+  --link-color: #0066cc;
+  --button-bg: #007bff;
+  --button-color: #fff;
+  --input-bg: #fff;
+  --input-border: #ccc;
+}
+
+.dark-theme {
+  --bg-color: #121212;
+  --text-color: #eee;
+  --link-color: #3399ff;
+  --button-bg: #3399ff;
+  --button-color: #121212;
+  --input-bg: #222;
+  --input-border: #555;
+}
