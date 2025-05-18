@@ -89,12 +89,6 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <h1>Welcome to Dashboard</h1>
-          <div className="user-info">
-            👤 {auth.currentUser?.email} <button onClick={() => signOut(auth)}>Вийти</button>
-            <button className="theme-toggle" onClick={toggleTheme}>
-              {darkTheme ? 'Світла тема' : 'Темна тема'}
-            </button>
-          </div>
         </header>
 
         <section className="stats-section">
