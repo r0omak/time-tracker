@@ -1,0 +1,255 @@
+/* Глобальні стилі */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #ffffff;
+  color: #1e2a38; /* Темний текст */
+  min-height: 100vh;
+  width: 100%;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Темна тема */
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Контейнер основного вмісту */
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: inherit;
+}
+
+/* Теми для контейнера */
+.container.light {
+  background-color: #fff;
+  color: #1e2a38;
+}
+
+.container.dark {
+  background-color: #222;
+  color: #e0e0e0;
+}
+
+/* Інпути */
+input {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  background-color: #fff;
+  color: #333;
+}
+
+.container.dark input {
+  background-color: #333;
+  color: #e0e0e0;
+  border-color: #555;
+}
+
+input:focus {
+  border-color: #4e8dff; /* синій — фокус */
+  outline: none;
+}
+
+/* Кнопки */
+button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background-color: #4e8dff;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3a74cc;
+}
+
+button:disabled {
+  background-color: #9fbce3;
+  cursor: not-allowed;
+}
+
+/* Список записів */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  color: #222;
+}
+
+li:last-child {
+  margin-bottom: 0;
+}
+
+/* Теми для списку записів */
+.container.light ul li {
+  background-color: #f9f9f9;
+  color: #222;
+  border-color: #ddd;
+}
+
+.container.dark ul li {
+  background-color: #333;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+/* Заголовки */
+h1, h2, h3 {
+  text-align: center;
+  color: inherit; /* Наслідуємо від контейнера */
+  margin-bottom: 15px;
+}
+
+/* Посилання */
+a {
+  color: #4e8dff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #3a74cc;
+}
+
+/* Футер */
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+body.dark footer {
+  color: #aaa;
+}
+
+/* Хедер */
+header {
+  background-color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #1e2a38;
+}
+
+body.dark header {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+}
+
+/* Кнопка логаут */
+header button {
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: background-color 0.3s ease;
+}
+
+header button:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* Плавна поява */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Скелетон */
+.skeleton {
+  background-color: #ddd;
+  height: 30px;
+  border-radius: 4px;
+  margin: 10px 0;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Кнопка темної теми */
+.theme-toggle-btn {
+  cursor: pointer;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-weight: 600;
+  background: transparent;
+  transition: background-color 0.3s ease;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+/* Кнопки повторюються, але залишаю для узгодженості */
+button {
+  background-color: #4e8dff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3b70d6;
+}
