@@ -5,34 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import './TimeTracker.css';
 
-const TimeTracker = () => {
+const TimeTracker = ({ theme, toggleTheme }) => {
   const [timeEntries, setTimeEntries] = useState([]);
   const [title, setTitle] = useState('');
   const [startTime, setStartTime] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [darkTheme, setDarkTheme] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem('darkTheme');
-    setDarkTheme(storedTheme === 'true');
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('darkTheme', darkTheme);
-    if (darkTheme) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
-  }, [darkTheme]);
-
-  const toggleTheme = () => {
-    setDarkTheme((prev) => !prev);
-  };
 
   const fetchTimeEntries = async () => {
     const user = auth.currentUser;
@@ -150,7 +131,7 @@ const TimeTracker = () => {
 
   return (
     <Layout>
-      <div className={`container ${darkTheme ? 'dark' : 'light'}`}>
+      <div className={`container ${theme === 'dark' ? 'dark' : 'light'}`}>
         <h2>Тайм-трекер</h2>
 
         <input

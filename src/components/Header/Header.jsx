@@ -1,49 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { auth } from '../../firebase';
-import { signOut } from 'firebase/auth';
-import Cookies from 'js-cookie';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ theme, toggleTheme, userEmail, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'light';
-  });
-
-  const [userEmail, setUserEmail] = useState(null);
-
-  useEffect(() => {
-    document.body.className = theme === 'dark' ? 'dark-theme' : '';
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
-    if (auth.currentUser) {
-      setUserEmail(auth.currentUser.email);
-    }
-  }, [auth.currentUser]);
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        Cookies.remove('userToken');
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error('Logout error:', error.message);
-      });
-  };
-
   return (
     <header className="header">
-      <div className="header-logo" onClick={() => navigate('/dashboard')}>
+      <div
+        className="header-logo"
+        onClick={() => navigate('/dashboard')}
+        style={{ cursor: 'pointer' }}
+      >
         ⏱ <span>TimeTracker</span>
       </div>
 
@@ -51,29 +20,30 @@ const Header = () => {
         <button
           className={location.pathname === '/dashboard' ? 'active' : ''}
           onClick={() => navigate('/dashboard')}
+          type="button"
         >
           Dashboard
         </button>
         <button
           className={location.pathname === '/tracker' ? 'active' : ''}
           onClick={() => navigate('/tracker')}
+          type="button"
         >
           Time Tracker
         </button>
-
-        {userEmail && (
-          <span className="profile-info">
-            👤 {userEmail}
-            <button onClick={handleLogout} className="logout-btn">
-              Вийти
-            </button>
-          </span>
-        )}
-
-        <button onClick={toggleTheme} className="theme-toggle-btn">
-          {theme === 'light' ? '🌙 Темна' : '☀️ Світла'}
-        </button>
       </nav>
+
+      {userEmail && (
+        <div className="user-info">
+          <span className="user-icon" role="img" aria-label="User">
+            👤
+          </span>
+          <span className="user-email">{userEmail}</span>
+          <button className="logout-btn" onClick={onLogout} type="button">
+            Вийти
+          </button>
+        </div>
+      )}
     </header>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { signOut } from 'firebase/auth';
 import { auth, db } from '../../firebase';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import Layout from '../Layout/Layout';
@@ -15,14 +14,17 @@ import {
 
 import './Dashboard.css';
 
-const Dashboard = () => {
+const Dashboard = ({ theme }) => {
+  // Визначаємо, чи темна тема
+  const darkTheme = theme === 'dark';
+
   const [stats, setStats] = useState({
     count: 0,
     totalMinutes: 0,
     lastEntryDate: null,
   });
+
   const [chartData, setChartData] = useState([]);
-  const [darkTheme, setDarkTheme] = useState(false);
 
   // Завантаження даних з Firestore
   const fetchStats = async () => {
@@ -52,7 +54,10 @@ const Dashboard = () => {
         lastDate = end;
       }
 
-      const dateLabel = start.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
+      const dateLabel = start.toLocaleDateString('uk-UA', {
+        day: '2-digit',
+        month: '2-digit',
+      });
 
       dataForChart.push({
         date: dateLabel,
@@ -65,24 +70,15 @@ const Dashboard = () => {
       totalMinutes: Math.round(totalMinutes),
       lastEntryDate: lastDate ? lastDate.toLocaleString('uk-UA') : '—',
     });
+
     setChartData(dataForChart);
   };
 
-  // Обчислення середньої тривалості сесії
-  const avgMinutes = stats.count ? Math.round(stats.totalMinutes / stats.count) : 0;
-
-  // Тогл теми
-  const toggleTheme = () => setDarkTheme((prev) => !prev);
-
-  // Додаємо/видаляємо клас для теми в body
-  useEffect(() => {
-    document.body.classList.toggle('dark', darkTheme);
-  }, [darkTheme]);
-
-  // Завантаження статистики при завантаженні
   useEffect(() => {
     fetchStats();
   }, []);
+
+  const avgMinutes = stats.count ? Math.round(stats.totalMinutes / stats.count) : 0;
 
   return (
     <Layout>
