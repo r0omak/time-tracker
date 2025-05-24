@@ -31,19 +31,25 @@ const Header = ({ theme, toggleTheme, userEmail, onLogout }) => {
         >
           Time Tracker
         </button>
-      </nav>
+        <button
+          className={location.pathname === '/calendar' ? 'active' : ''}
+          onClick={() => navigate('/calendar')}
+        >
+          Календар
+        </button>
 
-      {userEmail && (
-        <div className="user-info">
-          <span className="user-icon" role="img" aria-label="User">
-            👤
-          </span>
-          <span className="user-email">{userEmail}</span>
-          <button className="logout-btn" onClick={onLogout} type="button">
-            Вийти
-          </button>
-        </div>
-      )}
+        {userEmail && (
+          <div className="user-info">
+            <span className="user-icon" role="img" aria-label="User">
+              👤
+            </span>
+            <span className="user-email">{userEmail}</span>
+            <button className="logout-btn" onClick={onLogout} type="button">
+              Вийти
+            </button>
+          </div>
+        )}
+      </nav>
     </header>
   );
 };

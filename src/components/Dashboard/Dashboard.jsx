@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
-import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc, Timestamp } from 'firebase/firestore';
 import Layout from '../Layout/Layout';
 import {
   LineChart,
@@ -12,32 +12,39 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-import './Dashboard.css';
-
-const Dashboard = ({ theme }) => {
-  // Визначаємо, чи темна тема
-  const darkTheme = theme === 'dark';
-
+const Dashboard = () => {
   const [stats, setStats] = useState({
     count: 0,
     totalMinutes: 0,
     lastEntryDate: null,
   });
-
   const [chartData, setChartData] = useState([]);
+  const [userRole, setUserRole] = useState(null);
+  const [userStats, setUserStats] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Завантаження даних з Firestore
   const fetchStats = async () => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const q = query(collection(db, 'time_entries'), where('userId', '==', user.uid));
-    const snapshot = await getDocs(q);
-    const entries = snapshot.docs.map((doc) => doc.data());
+    // Отримуємо роль
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    const role = userDoc.exists() ? userDoc.data().role : 'employee';
+    setUserRole(role);
+
+    const entriesQuery =
+      role === 'admin'
+        ? query(collection(db, 'time_entries'))
+        : query(collection(db, 'time_entries'), where('userId', '==', user.uid));
+
+    const snapshot = await getDocs(entriesQuery);
+    const entries = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     let totalMinutes = 0;
     let lastDate = null;
-    const dataForChart = [];
+
+    const chart = [];
+    const perUserStats = {};
 
     entries.forEach((entry) => {
       const start =
@@ -46,78 +53,120 @@ const Dashboard = ({ theme }) => {
           : new Date(entry.start_time);
       const end =
         entry.end_time instanceof Timestamp ? entry.end_time.toDate() : new Date(entry.end_time);
-
-      const duration = (end - start) / 1000 / 60; // хвилини
+      const duration = (end - start) / 1000 / 60;
       totalMinutes += duration;
-
-      if (!lastDate || end > lastDate) {
-        lastDate = end;
-      }
+      if (!lastDate || end > lastDate) lastDate = end;
 
       const dateLabel = start.toLocaleDateString('uk-UA', {
         day: '2-digit',
         month: '2-digit',
       });
 
-      dataForChart.push({
+      chart.push({
         date: dateLabel,
         duration: Math.round(duration),
+        user: entry.userEmail || entry.userId || '—',
       });
+
+      if (role === 'admin') {
+        const key = entry.userEmail || entry.userId || 'Невідомий';
+        if (!perUserStats[key]) {
+          perUserStats[key] = { count: 0, total: 0 };
+        }
+        perUserStats[key].count += 1;
+        perUserStats[key].total += duration;
+      }
     });
 
+    const count = entries.length;
+    const usersArray = Object.entries(perUserStats).map(([user, data]) => ({
+      user,
+      count: data.count,
+      totalMinutes: Math.round(data.total),
+    }));
+
     setStats({
-      count: entries.length,
+      count,
       totalMinutes: Math.round(totalMinutes),
       lastEntryDate: lastDate ? lastDate.toLocaleString('uk-UA') : '—',
     });
-
-    setChartData(dataForChart);
+    setChartData(chart);
+    setUserStats(usersArray);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchStats();
   }, []);
 
-  const avgMinutes = stats.count ? Math.round(stats.totalMinutes / stats.count) : 0;
-
   return (
     <Layout>
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-          <h1>Welcome to Dashboard</h1>
-        </header>
+      <div className="container" style={{ padding: '20px' }}>
+        <h1>👋 Вітаємо у Dashboard</h1>
 
-        <section className="stats-section">
-          <h2>Статистика</h2>
-          <ul className="stats-list">
-            <li className={`stat-card ${darkTheme ? 'dark-blue' : 'blue'}`}>
-              📌 Записів часу: <strong>{stats.count}</strong>
-            </li>
-            <li className={`stat-card ${darkTheme ? 'dark-green' : 'green'}`}>
-              ⏳ Загальна тривалість: <strong>{stats.totalMinutes}</strong> хв
-            </li>
-            <li className={`stat-card ${darkTheme ? 'dark-yellow' : 'orange'}`}>
-              🗓 Останній запис: <strong>{stats.lastEntryDate}</strong>
-            </li>
-            <li className="stat-card">
-              ⚖️ Середня сесія: <strong>{avgMinutes} хв</strong>
-            </li>
-          </ul>
-        </section>
+        {loading ? (
+          <p>Завантаження статистики...</p>
+        ) : (
+          <>
+            <h2>📊 Статистика</h2>
+            <ul>
+              <li>
+                📌 Записів часу: <strong>{stats.count}</strong>
+              </li>
+              <li>
+                ⏳ Загальна тривалість: <strong>{stats.totalMinutes}</strong> хв
+              </li>
+              <li>
+                🗓 Останній запис: <strong>{stats.lastEntryDate}</strong>
+              </li>
+              {userRole === 'admin' && (
+                <li style={{ color: '#2e7d32', marginTop: '10px' }}>
+                  👑 Ви адміністратор і переглядаєте всі записи
+                </li>
+              )}
+            </ul>
 
-        {chartData.length > 0 && (
-          <section className="chart-section">
-            <h3>📈 Графік робочих сесій</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis unit=" хв" />
-                <Tooltip />
-                <Line type="monotone" dataKey="duration" stroke="#4e8dff" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </section>
+            {userRole === 'admin' && userStats.length > 0 && (
+              <>
+                <h3 style={{ marginTop: '30px' }}>👥 Статистика по користувачах</h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
+                  <thead>
+                    <tr>
+                      <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>
+                        Користувач
+                      </th>
+                      <th style={{ borderBottom: '1px solid #ccc' }}>Кількість записів</th>
+                      <th style={{ borderBottom: '1px solid #ccc' }}>Сума часу (хв)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userStats.map((u) => (
+                      <tr key={u.user}>
+                        <td>{u.user}</td>
+                        <td style={{ textAlign: 'center' }}>{u.count}</td>
+                        <td style={{ textAlign: 'center' }}>{u.totalMinutes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
+
+            {chartData.length > 0 && (
+              <>
+                <h3 style={{ marginTop: '30px' }}>📈 Графік робочих сесій</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis unit=" хв" />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="duration" stroke="#4e8dff" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </>
+            )}
+          </>
         )}
       </div>
     </Layout>

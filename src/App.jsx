@@ -8,6 +8,7 @@ import Register from './components/AuthForm/Register';
 import Dashboard from './components/Dashboard/Dashboard';
 import TimeTracker from './components/TimeTracker/TimeTracker';
 import Header from './components/Header/Header';
+import TimeCalendar from './components/Calendar/Calendar';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -25,7 +26,6 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  // ---- Нове: оновлення класу body залежно від теми ----
   useEffect(() => {
     if (theme === 'dark') {
       document.body.classList.add('dark-theme');
@@ -61,6 +61,7 @@ const App = () => {
             )
           }
         />
+        <Route path="/calendar" element={<TimeCalendar />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

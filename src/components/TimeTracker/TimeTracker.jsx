@@ -57,6 +57,7 @@ const TimeTracker = ({ theme, toggleTheme }) => {
       const end = new Date();
       await addDoc(collection(db, 'time_entries'), {
         userId: user.uid,
+        userEmail: user.email, // 👈 Додаємо email
         title: title || 'Без назви',
         start_time: Timestamp.fromDate(new Date(startTime)),
         end_time: Timestamp.fromDate(end),
