@@ -26,6 +26,7 @@ Time Tracker — це веб-додаток для відстеження роб
 ```bash
 git clone https://github.com/r0omak/time-tracker.git
 cd time-tracker
-npm install
+npm install recharts js-cookie router-dom tailwind
 npm run start
+
 
